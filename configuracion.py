@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 
@@ -5,14 +6,7 @@ DIRECTORIO_BASE = Path(__file__).resolve().parent
 
 
 class Configuracion:
-    """Configuración central del proyecto.
-
-    Coloca tu clave de Google Maps en CLAVE_API_GOOGLE. Para que todas las
-    funciones trabajen, habilita Maps JavaScript API, Places API,
-    Geocoding API y Routes API en el mismo proyecto de Google Cloud.
-    """
-
-    CLAVE_API_GOOGLE = "AIzaSyBI7-JK1Ll0OQGwG7n0tTdkQAYRDN4f094"
+    CLAVE_API_GOOGLE = os.environ.get("CLAVE_API_GOOGLE", "")
 
     TIPO_VEHICULO_PREDETERMINADO = "GASOLINE"
     PRECIO_GASOLINA_MXN = 23.99
@@ -22,8 +16,8 @@ class Configuracion:
     TIEMPO_ESPERA_GOOGLE_SEGUNDOS = 35
 
     SERVIDOR = "0.0.0.0"
-    PUERTO = 5000
-    DEPURACION = True
+    PUERTO = int(os.environ.get("PORT", 5000))
+    DEPURACION = False  # ← False en producción
 
     JSON_SORT_KEYS = False
     JSON_AS_ASCII = False
