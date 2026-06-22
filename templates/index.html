@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rutas México · Viaja con confianza</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+
+  <!-- Mapa de fondo -->
+  <main id="mapa" aria-label="Mapa de rutas de México"></main>
+
+  <!-- Botón flotante para abrir panel -->
+  <button id="botonAbrirPanel" class="fab hidden" type="button" aria-label="Abrir panel de navegación">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <line x1="3" y1="6"  x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+
+  <!-- ══ PANEL LATERAL DERECHO ══ -->
+  <aside id="panelControl" class="panel">
+
+    <!-- Encabezado -->
+    <header class="panel-head">
+      <div class="brand-row">
+        <div class="brand-pill">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+            <circle cx="12" cy="9" r="2.5"/>
+          </svg>
+          Rutas México
+        </div>
+        <button id="botonCerrarPanel" class="btn-icon" type="button" aria-label="Cerrar panel">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <h1 class="panel-title">Viaja con <em>confianza</em><br>por México</h1>
+      <p class="panel-sub">Planificación inteligente · Zonas seguras</p>
+    </header>
+
+    <!-- Formulario de ruta -->
+    <section class="route-form">
+
+      <p class="sec-lbl">Tu recorrido</p>
+
+      <!-- Waypoints -->
+      <div class="waypoints">
+
+        <div class="waypoint-row">
+          <div class="wp-track">
+            <div class="wp-dot wp-a">1</div>
+            <div class="wp-connector"></div>
+          </div>
+          <div class="wp-field">
+            <label class="wp-label" for="entradaOrigen">Ciudad de origen</label>
+            <div class="wp-input-row">
+              <input id="entradaOrigen" type="text" autocomplete="off" placeholder="¿Desde qué ciudad partes?">
+              <button id="botonLimpiarOrigen" class="btn-clear" type="button" aria-label="Limpiar origen">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="waypoint-row">
+          <div class="wp-track">
+            <div class="wp-dot wp-b">2</div>
+          </div>
+          <div class="wp-field">
+            <label class="wp-label" for="entradaDestino">Ciudad de destino</label>
+            <div class="wp-input-row">
+              <input id="entradaDestino" type="text" autocomplete="off" placeholder="¿A qué ciudad te diriges?">
+              <button id="botonLimpiarDestino" class="btn-clear" type="button" aria-label="Limpiar destino">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Vehículo + Rendimiento -->
+      <div class="meta-row">
+        <div class="meta-field">
+          <label for="selectorVehiculo">Tipo de vehículo</label>
+          <select id="selectorVehiculo">
+            <option value="GASOLINE">Automóvil</option>
+            <option value="TRUCK">Camión</option>
+          </select>
+        </div>
+        <div class="meta-field">
+          <label for="entradaRendimiento">Rendimiento (km/L)</label>
+          <input id="entradaRendimiento" type="number" min="1" max="100" step="0.1" value="{{ rendimiento_predeterminado }}">
+        </div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="action-row">
+        <button id="botonCalcular" class="btn-primary" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="22 2 11 13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Trazar ruta
+        </button>
+        <button id="botonLimpiarTodo" class="btn-ghost" type="button">Limpiar</button>
+      </div>
+
+      <p class="hint-text">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        Toca el mapa para marcar puntos de inicio y llegada.
+      </p>
+    </section>
+
+    <!-- Barra de zonas -->
+    <div class="zones-bar">
+      <button id="botonAlternarZonas" class="btn-danger-soft" type="button">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        Zonas de riesgo
+      </button>
+      <button id="botonAgregarZona" class="btn-ghost" type="button">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Nueva zona
+      </button>
+    </div>
+
+    <!-- Mensaje de estado -->
+    <div id="cajaMensaje" class="status-msg hidden" role="status"></div>
+
+    <!-- ══ Resultados ══ -->
+    <section id="panelResultados" class="results-panel hidden">
+
+      <div class="results-head">
+        <h2>Detalle del trayecto</h2>
+        <span id="insigniaAdvertenciaZona" class="badge-warn hidden">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          </svg>
+          Zona roja
+        </span>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-label">Distancia</span>
+          <strong id="valorDistancia" class="metric-val">0 km</strong>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Tiempo estimado</span>
+          <strong id="valorDuracion" class="metric-val">0 min</strong>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Combustible</span>
+          <strong id="valorLitros" class="metric-val">0 L</strong>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Costo gasolina</span>
+          <strong id="valorCostoCombustible" class="metric-val">$0</strong>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Casetas de peaje</span>
+          <strong id="valorCostoPeajes" class="metric-val">$0</strong>
+        </div>
+        <div class="metric-card metric-total">
+          <span class="metric-label">Costo total del viaje</span>
+          <strong id="valorCostoTotal" class="metric-val">$0 MXN</strong>
+        </div>
+      </div>
+
+      <p id="descripcionRuta" class="route-desc"></p>
+
+      <div id="resultadoZonasRojas" class="result-block danger-block hidden">
+        <div class="block-head">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <h3>Zonas de riesgo en ruta</h3>
+        </div>
+        <ul id="listaZonasRojas"></ul>
+      </div>
+
+      <div id="resultadoPeajes" class="result-block">
+        <div class="block-head">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
+            <rect x="1" y="4" width="22" height="16" rx="2"/>
+            <line x1="1" y1="10" x2="23" y2="10"/>
+          </svg>
+          <h3>Casetas de peaje en ruta</h3>
+        </div>
+        <div id="listaPeajes" class="tolls-list"></div>
+      </div>
+
+    </section>
+  </aside>
+
+  <!-- ══ DIÁLOGO ZONA ══ -->
+  <dialog id="dialogoZona" class="zone-dialog">
+    <form id="formularioZona" method="dialog">
+      <input id="idZona" type="hidden">
+
+      <header class="dialog-head">
+        <div>
+          <p class="dialog-eyebrow">Administración de zonas</p>
+          <h2 id="tituloDialogoZona">Registrar zona de riesgo</h2>
+        </div>
+        <button id="botonCerrarDialogoZona" class="btn-icon" type="button" aria-label="Cerrar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="dialog-body">
+
+        <div class="form-field">
+          <label for="nombreZona">Nombre de la zona</label>
+          <input id="nombreZona" type="text" maxlength="180" required placeholder="Ej. Colonia Doctores, Centro Histórico">
+        </div>
+
+        <div class="form-2col">
+          <div class="form-field">
+            <label for="municipioZona">Municipio</label>
+            <input id="municipioZona" type="text" maxlength="180" placeholder="Municipio o alcaldía">
+          </div>
+          <div class="form-field">
+            <label for="estadoZona">Estado</label>
+            <input id="estadoZona" type="text" maxlength="180" placeholder="Estado de la república">
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="riesgosZona">Tipo de riesgos <span class="label-hint">separados por coma</span></label>
+          <input id="riesgosZona" type="text" maxlength="400" placeholder="Robo, asalto, extorsión, bloqueos">
+        </div>
+
+        <div class="form-field">
+          <label for="descripcionZona">Descripción detallada</label>
+          <textarea id="descripcionZona" maxlength="800" rows="3" placeholder="Contexto adicional sobre esta zona de riesgo..."></textarea>
+        </div>
+
+        <div class="form-2col">
+          <div class="form-field">
+            <label for="latitudZona">Latitud</label>
+            <input id="latitudZona" type="number" min="-90" max="90" step="any" required placeholder="19.4326">
+          </div>
+          <div class="form-field">
+            <label for="longitudZona">Longitud</label>
+            <input id="longitudZona" type="number" min="-180" max="180" step="any" required placeholder="-99.1332">
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="radioZona">Radio de cobertura (metros)</label>
+          <input id="radioZona" type="number" min="50" max="50000" step="50" value="500" required>
+        </div>
+
+        <p id="estadoFormularioZona" class="form-status"></p>
+      </div>
+
+      <footer class="dialog-foot">
+        <button id="botonEliminarZona" class="btn-danger hidden" type="button">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M9 6V4h6v2"/>
+          </svg>
+          Eliminar zona
+        </button>
+        <div class="dialog-actions">
+          <button id="botonCancelarZona" class="btn-ghost" type="button">Cancelar</button>
+          <button class="btn-primary" type="submit">Guardar zona</button>
+        </div>
+      </footer>
+    </form>
+  </dialog>
+
+  <script src="{{ url_for('static', filename='js/aplicacion.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/mapa.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/zonas.js') }}"></script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key={{ clave_api_google }}&loading=async&libraries=places,geometry&callback=iniciarMapa"
+    async defer>
+  </script>
+</body>
+</html>
