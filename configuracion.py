@@ -6,7 +6,7 @@ DIRECTORIO_BASE = Path(__file__).resolve().parent
 
 
 class Configuracion:
-    CLAVE_API_GOOGLE = os.environ.get("CLAVE_API_GOOGLE", "")
+    CLAVE_API_GOOGLE = os.environ.get("AIzaSyBI7-JK1Ll0OQGwG7n0tTdkQAYRDN4f094")
 
     TIPO_VEHICULO_PREDETERMINADO = "GASOLINE"
     PRECIO_GASOLINA_MXN = 23.99
